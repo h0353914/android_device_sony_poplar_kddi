@@ -26,6 +26,7 @@ TARGET_BOOTLOADER_BOARD_NAME := G8341
 
 ### KERNEL
 TARGET_KERNEL_CONFIG := lineage-msm8998-yoshino-poplar_kddi_defconfig
+TARGET_KERNEL_CONFIG += vendor/debugfs.config
 
 BOARD_KERNEL_CMDLINE += androidboot.hardware=poplar_kddi
 
