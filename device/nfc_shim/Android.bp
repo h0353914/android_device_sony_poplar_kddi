@@ -1,0 +1,21 @@
+cc_binary {
+    name: "android.hardware.nfc@1.2-service.cxd22xx_shim",
+    relative_install_path: "hw",
+    init_rc: ["android.hardware.nfc@1.2-service.cxd22xx_shim.rc"],
+    vintf_fragments: ["android.hardware.nfc@1.2-service.cxd22xx_shim.xml"],
+    vendor: true,
+    shared_libs: [
+        "liblog",
+        "libbase",
+        "libhidlbase",
+        "libhidltransport",
+        "libutils",
+        "android.hardware.nfc@1.0",
+        "android.hardware.nfc@1.1",
+        "android.hardware.nfc@1.2",
+    ],
+    srcs: [
+        "NfcShim.cpp",
+        "service.cpp",
+    ],
+}
