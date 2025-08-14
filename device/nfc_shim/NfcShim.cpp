@@ -36,20 +36,17 @@ Return<V1_0::NfcStatus> NfcShim::open(const sp<V1_0::INfcClientCallback>& client
     return mNfc11->open(clientCallback);
 }
 
-// V1_2 write: 回傳實際寫入的位元組數；透過 1.1 HAL 狀態橋接
+// V1_2 write: 直接轉回底層 HAL 回傳的 bytes written
 Return<uint32_t> NfcShim::write(const ::android::hardware::hidl_vec<uint8_t>& data) {
     if (!mNfc11) return static_cast<uint32_t>(0);
 
-    auto ret = mNfc11->write(data); // V1.1 回傳 NfcStatus
+    auto ret = mNfc11->write(data); // V1.0/1.1: Return<uint32_t>
     if (!ret.isOk()) {
         LOG(ERROR) << "NfcShim::write: transport error";
         return static_cast<uint32_t>(0);
     }
-    V1_0::NfcStatus st = ret; // unwrap
-    if (st == V1_0::NfcStatus::OK) {
-        return static_cast<uint32_t>(data.size());
-    }
-    return static_cast<uint32_t>(0);
+    uint32_t bytes = ret; // unwrap
+    return bytes;
 }
 
 Return<V1_0::NfcStatus> NfcShim::coreInitialized(const ::android::hardware::hidl_vec<uint8_t>& data) {
@@ -94,14 +91,14 @@ Return<V1_0::NfcStatus> NfcShim::closeForPowerOffCase() {
 }
 
 // V1_2::INfc
-// 注意：1.2 版仍保留舊的 getConfig(...)，其 callback 型別來自 1.1 的 NfcConfig
+// 注意：1.2 保留舊的 getConfig(...)，其 callback 型別對應 1.1 的 NfcConfig
 Return<void> NfcShim::getConfig(getConfig_cb _hidl_cb) {
     ::android::hardware::nfc::V1_1::NfcConfig cfg11 = {};
     _hidl_cb(cfg11);
     return {};
 }
 
-// 新增：1.2 專屬的 getConfig_1_2(...)，回傳 1.2 版 NfcConfig
+// 1.2 新增的 getConfig_1_2(...)，使用 1.2 版 NfcConfig
 Return<void> NfcShim::getConfig_1_2(getConfig_1_2_cb _hidl_cb) {
     ::android::hardware::nfc::V1_2::NfcConfig cfg12 = {};
     _hidl_cb(cfg12);
