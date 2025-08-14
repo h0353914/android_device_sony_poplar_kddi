@@ -21,4 +21,8 @@ PRODUCT_AAPT_PREF_CONFIG := xxhdpi
 DEVICE_PACKAGE_OVERLAYS += \
     $(DEVICE_PATH)/overlay
 
+# NFC VINTF fragment
+PRODUCT_PACKAGES += \
+    android.hardware.nfc.cxd22xx.vintf
+
 include $(DEVICE_PATH)/device/*.mk

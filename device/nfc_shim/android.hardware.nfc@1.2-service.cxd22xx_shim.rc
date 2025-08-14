@@ -1,0 +1,6 @@
+service vendor.nfc_hal_1_2 /vendor/bin/hw/android.hardware.nfc@1.2-service.cxd22xx_shim
+    class hal
+    user nfc
+    group nfc
+    interface android.hardware.nfc@1.2::INfc default
+    oneshot
