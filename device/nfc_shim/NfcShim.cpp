@@ -1,93 +1,95 @@
 #include "NfcShim.h"
 
 #include <android-base/logging.h>
+#include <android/hardware/nfc/1.0/types.h>
 #include <android/hardware/nfc/1.1/INfc.h>
 #include <android/hardware/nfc/1.2/INfc.h>
 #include <hidl/Status.h>
 
+using ::android::sp;
+using ::android::hardware::Return;
+using ::android::hardware::Void;
+
 namespace android {
 namespace hardware {
-nnamespace nfc {
+namespace nfc {
 nnamespace V1_2 {
 nnamespace implementation {
 
-using ::android::hardware::hidl_vec;
-using ::android::hardware::Return;
-using ::android::hardware::Void;
-using ::android::hardware::nfc::V1_0::NfcStatus;
-using ::android::sp;
-
 NfcShim::NfcShim() {
+    // Acquire the underlying 1.1 HAL (default instance)
     mNfc11 = V1_1::INfc::getService();
     if (mNfc11 == nullptr) {
-        LOG(ERROR) << "Failed to get NFC 1.1 service";
+        LOG(ERROR) << "NfcShim: failed to get underlying 1.1 INfc";
     } else {
-        LOG(INFO) << "Acquired NFC 1.1 service";
+        LOG(INFO) << "NfcShim: underlying 1.1 INfc acquired";
     }
 }
 
-Return<NfcStatus> NfcShim::open(const sp<V1_0::INfcClientCallback>& clientCallback) {
-    if (mNfc11 == nullptr) return NfcStatus::FAILED;
+// V1_0::INfc
+Return<V1_0::NfcStatus> NfcShim::open(const sp<V1_0::INfcClientCallback>& clientCallback) {
+    if (!mNfc11) return V1_0::NfcStatus::FAILED;
     return mNfc11->open(clientCallback);
 }
 
-// 1.2 write: must return number of bytes written
-Return<uint32_t> NfcShim::write(const hidl_vec<uint8_t>& data) {
-    if (mNfc11 == nullptr) return static_cast<uint32_t>(0);
+// V1_2 write must return the number of bytes written
+Return<uint32_t> NfcShim::write(const ::android::hardware::hidl_vec<uint8_t>& data) {
+    if (!mNfc11) return static_cast<uint32_t>(0);
+
     auto ret = mNfc11->write(data); // V1.1 returns NfcStatus
     if (!ret.isOk()) {
-        LOG(ERROR) << "NfcShim::write transport error";
+        LOG(ERROR) << "NfcShim::write: transport error";
         return static_cast<uint32_t>(0);
     }
-    NfcStatus st = ret;
-    if (st == NfcStatus::OK) {
+    V1_0::NfcStatus st = ret; // unwrap
+    if (st == V1_0::NfcStatus::OK) {
         return static_cast<uint32_t>(data.size());
     }
     return static_cast<uint32_t>(0);
 }
 
-Return<NfcStatus> NfcShim::coreInitialized(const hidl_vec<uint8_t>& data) {
-    if (mNfc11 == nullptr) return NfcStatus::FAILED;
+Return<V1_0::NfcStatus> NfcShim::coreInitialized(const ::android::hardware::hidl_vec<uint8_t>& data) {
+    if (!mNfc11) return V1_0::NfcStatus::FAILED;
     return mNfc11->coreInitialized(data);
 }
 
-Return<NfcStatus> NfcShim::prediscover() {
-    if (mNfc11 == nullptr) return NfcStatus::FAILED;
+Return<V1_0::NfcStatus> NfcShim::prediscover() {
+    if (!mNfc11) return V1_0::NfcStatus::FAILED;
     return mNfc11->prediscover();
 }
 
-Return<NfcStatus> NfcShim::close() {
-    if (mNfc11 == nullptr) return NfcStatus::FAILED;
+Return<V1_0::NfcStatus> NfcShim::close() {
+    if (!mNfc11) return V1_0::NfcStatus::FAILED;
     return mNfc11->close();
 }
 
-Return<NfcStatus> NfcShim::controlGranted() {
-    if (mNfc11 == nullptr) return NfcStatus::FAILED;
+Return<V1_0::NfcStatus> NfcShim::controlGranted() {
+    if (!mNfc11) return V1_0::NfcStatus::FAILED;
     return mNfc11->controlGranted();
 }
 
-Return<NfcStatus> NfcShim::powerCycle() {
-    if (mNfc11 == nullptr) return NfcStatus::FAILED;
+Return<V1_0::NfcStatus> NfcShim::powerCycle() {
+    if (!mNfc11) return V1_0::NfcStatus::FAILED;
     return mNfc11->powerCycle();
 }
 
-Return<NfcStatus> NfcShim::open_1_1(const sp<V1_1::INfcClientCallback>& clientCallback) {
-    if (mNfc11 == nullptr) return NfcStatus::FAILED;
+// V1_1::INfc
+Return<V1_0::NfcStatus> NfcShim::open_1_1(const sp<V1_1::INfcClientCallback>& clientCallback) {
+    if (!mNfc11) return V1_0::NfcStatus::FAILED;
     return mNfc11->open_1_1(clientCallback);
 }
 
 Return<void> NfcShim::factoryReset() {
-    if (mNfc11 != nullptr) {
-        mNfc11->factoryReset();
-    }
+    if (mNfc11) mNfc11->factoryReset();
     return Void();
 }
 
-Return<NfcStatus> NfcShim::closeForPowerOffCase() {
-    if (mNfc11 == nullptr) return NfcStatus::FAILED;
+Return<V1_0::NfcStatus> NfcShim::closeForPowerOffCase() {
+    if (!mNfc11) return V1_0::NfcStatus::FAILED;
     return mNfc11->closeForPowerOffCase();
 }
 
+// V1_2::INfc
 Return<void> NfcShim::getConfig_1_2(getConfig_1_2_cb _hidl_cb) {
     V1_2::NfcConfig cfg = {};
     _hidl_cb(cfg);
