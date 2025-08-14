@@ -13,7 +13,7 @@ namespace implementation {
 
 using ::android::hardware::hidl_vec;
 using ::android::hardware::Return;
-using ::android::hardware::Void;
+// 注意：HIDL 的 Return 要用小寫 void 作為模板參數
 using ::android::hardware::nfc::V1_0::NfcStatus;
 using ::android::sp;
 
@@ -32,11 +32,12 @@ public:
 
     // V1_1::INfc
     Return<NfcStatus> open_1_1(const sp<V1_1::INfcClientCallback>& clientCallback) override;
-    Return<Void>      factoryReset() override;
+    Return<void>      factoryReset() override;
     Return<NfcStatus> closeForPowerOffCase() override;
 
     // V1_2::INfc
-    Return<Void> getConfig(getConfig_cb _hidl_cb) override;
+    Return<void> getConfig(getConfig_cb _hidl_cb) override;
+    Return<void> getConfig_1_2(getConfig_1_2_cb _hidl_cb) override;
 
 private:
     sp<V1_1::INfc> mNfc11;
