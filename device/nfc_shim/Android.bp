@@ -8,6 +8,7 @@ cc_binary {
         "NfcShim.cpp",
         "service.cpp",
     ],
+    local_include_dirs: ["."],
     cflags: [
         "-Werror",
         "-Wall",
