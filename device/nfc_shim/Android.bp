@@ -18,7 +18,5 @@ cc_binary {
     init_rc: [
         "android.hardware.nfc@1.2-service.cxd22xx_shim.rc",
     ],
-    vintf_fragments: [
-        "android.hardware.nfc@1.2-service.cxd22xx_shim.xml",
-    ],
+    // Drop vintf_fragments; rely on existing vendor manifest to avoid duplicate INfc/default
 }
