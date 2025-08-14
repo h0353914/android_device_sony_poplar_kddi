@@ -1,0 +1,7 @@
+prebuilt_etc {
+    name: "android.hardware.nfc.cxd22xx.vintf",
+    src: "android.hardware.nfc.cxd22xx.xml",
+    sub_dir: "vintf/manifest",
+    filename_from_src: true,
+    vendor: true,
+}
