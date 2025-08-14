@@ -1,0 +1,4 @@
+service vendor.nfc-hal-1-2 /vendor/bin/hw/android.hardware.nfc@1.2-service.cxd22xx_shim
+    class hal
+    user nfc
+    group nfc
