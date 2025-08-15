@@ -12,6 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# NFC
+# NFC 1.2 shim service for cxd22xx
 PRODUCT_PACKAGES += \
+    android.hardware.nfc@1.2-service.cxd22xx_shim
+
+# If a generic 1.2 service was previously included, ensure it is not pulled in to avoid conflicts
+PRODUCT_PACKAGES -= \
     android.hardware.nfc@1.2-service
