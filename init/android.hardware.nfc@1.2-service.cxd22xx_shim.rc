@@ -1,0 +1,11 @@
+service vendor.nfc_hal_1_2 /vendor/bin/hw/android.hardware.nfc@1.2-service.cxd22xx_shim
+    class hal
+    user nfc
+    group nfc diag
+    capabilities BLOCK_SUSPEND WAKE_ALARM NET_ADMIN
+    seclabel u:r:hal_nfc_default:s0
+    interface android.hardware.nfc@1.2::INfc default
+    # 如果该 shim 同时实现 1.1，也一并暴露以下接口，方便框架降级回退
+    interface android.hardware.nfc@1.1::INfc default
+    disabled
+    oneshot

@@ -1,6 +1,6 @@
-# NFC
-/(vendor|system/vendor)/bin/hw/android.hardware.nfc@1.1-service.cxd22xx       u:object_r:hal_nfc_default_exec:s0
-# NFC 1.2 shim service binary context
-/vendor/bin/hw/android\.hardware\.nfc@1\.2-service\.cxd22xx_shim    u:object_r:hal_nfc_default_exec:s0
-/dev/bd7602-i2c       u:object_r:nfc_device:s0
-/dev/cxd224x-i2c      u:object_r:nfc_device:s0
+# HAL 可执行文件打上 hal_nfc_default_exec，确保进程域为 hal_nfc_default
+/vendor/bin/hw/android.hardware.nfc@1\.1-service\.cxd22xx      u:object_r:hal_nfc_default_exec:s0
+/vendor/bin/hw/android.hardware.nfc@1\.2-service\.cxd22xx_shim  u:object_r:hal_nfc_default_exec:s0
+
+# 设备节点标注为 nfc_device，便于精确授权
+/dev/cxd224x-i2c                                              u:object_r:nfc_device:s0

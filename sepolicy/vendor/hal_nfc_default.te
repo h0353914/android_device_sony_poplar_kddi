@@ -1,0 +1,19 @@
+# 允许使用 binder/hwbinder
+binder_use(hal_nfc_default)
+hwbinder_use(hal_nfc_default)
+
+# 同域内的 binder 调用（常见于 HAL 内部互调）
+binder_call(hal_nfc_default, hal_nfc_default)
+
+# 允许向 hwservicemanager 注册/查询 HIDL 服务
+allow hal_nfc_default hwservicemanager:binder { call transfer };
+allow hal_nfc_default hwservicemanager:hwservice_manager { add find list };
+
+# 访问 /dev/cxd224x-i2c（节点建议标为 nfc_device，见 file_contexts）
+allow hal_nfc_default nfc_device:chr_file rw_file_perms;
+
+# 若目标环境中未将该节点标注为 nfc_device，可保底放开对 device 的访问（可按需移除）
+allow hal_nfc_default device:chr_file { open read write ioctl };
+
+# 读取 vendor 固件（若 HAL 需要）
+allow hal_nfc_default vendor_firmware_file:file r_file_perms;
