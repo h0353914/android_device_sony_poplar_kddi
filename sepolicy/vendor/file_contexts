@@ -4,3 +4,4 @@
 
 # 设备节点标注为 nfc_device，便于精确授权
 /dev/cxd224x-i2c                                              u:object_r:nfc_device:s0
+/dev/bd7602-i2c                                               u:object_r:nfc_device:s0
