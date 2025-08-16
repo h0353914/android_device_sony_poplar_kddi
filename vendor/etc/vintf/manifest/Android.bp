@@ -1,0 +1,5 @@
+vintf_fragment {
+    name: "android.hardware.nfc.cxd22xx.vintf",
+    src: "android.hardware.nfc.cxd22xx.xml",
+    vendor: true,
+}

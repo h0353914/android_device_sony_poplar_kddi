@@ -11,7 +11,8 @@ DEVICE_PATH := device/sony/poplar_kddi
 
 # Soong
 PRODUCT_SOONG_NAMESPACES += \
-    $(DEVICE_PATH)
+    $(DEVICE_PATH) \
+    $(DEVICE_PATH)/vendor/etc/vintf/manifest
 
 # Device uses high-density artwork where available
 PRODUCT_AAPT_CONFIG := normal
@@ -20,5 +21,9 @@ PRODUCT_AAPT_PREF_CONFIG := xxhdpi
 
 DEVICE_PACKAGE_OVERLAYS += \
     $(DEVICE_PATH)/overlay
+
+# NFC VINTF fragment
+PRODUCT_PACKAGES += \
+    android.hardware.nfc.cxd22xx.vintf
 
 include $(DEVICE_PATH)/device/*.mk
